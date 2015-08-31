@@ -3,8 +3,6 @@ require 'sidekiq/web'
 
 module Sidetiq
   module Web
-    include ::Sidekiq::WebHelpers
-    
     VIEWS = File.expand_path('views', File.dirname(__FILE__))
 
     def self.registered(app)
@@ -88,6 +86,12 @@ module Sidetiq
         redirect "#{root_path}sidetiq/locks"
       end
     end
+    
+    # Helper method extracted from Sidekiq (rather than including the entire ::Sidekiq::WebHelpers module)
+    def csrf_tag
+      "<input type='hidden' name='authenticity_token' value='#{session[:csrf]}'/>"
+    end
+    
   end
 end
 
