@@ -3,6 +3,8 @@ require 'sidekiq/web'
 
 module Sidetiq
   module Web
+    include ::Sidekiq::WebHelpers
+    
     VIEWS = File.expand_path('views', File.dirname(__FILE__))
 
     def self.registered(app)
