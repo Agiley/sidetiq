@@ -1,11 +1,14 @@
 require 'sidetiq'
 require 'sidekiq/web'
+require 'sidetiq/web_helpers'
 
 module Sidetiq
   module Web
     VIEWS = File.expand_path('views', File.dirname(__FILE__))
 
     def self.registered(app)
+      app.helpers Sidetiq::WebHelpers
+      
       app.get "/sidetiq" do
         @workers = Sidetiq.workers.sort_by { |worker| worker.name }
         @time = Sidetiq.clock.gettime
@@ -87,14 +90,8 @@ module Sidetiq
       end
     end
     
-    # Helper method extracted from Sidekiq (rather than including the entire ::Sidekiq::WebHelpers module)
-    def csrf_tag
-      "<input type='hidden' name='authenticity_token' value='#{session[:csrf]}'/>"
-    end
-    
   end
 end
 
 Sidekiq::Web.register(Sidetiq::Web)
 Sidekiq::Web.tabs["Sidetiq"] = "sidetiq"
-
